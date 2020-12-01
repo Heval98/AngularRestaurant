@@ -5,7 +5,6 @@ import { Dish } from '../shared/dish';
 import { DishService } from '../services/dish.service';
 import { switchMap } from 'rxjs/operators';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Feedback } from '../shared/feedback';
 import { Comment } from '../shared/comment';
 
 @Component({
@@ -19,10 +18,6 @@ export class DishdetailComponent implements OnInit {
 
     return value;
   }
-
-  feedbackForm: FormGroup;
-  feedback: Feedback;
-  @ViewChild('fform') feedbackFormDirective;
 
   formErrors = {
     'author': '',
@@ -50,7 +45,7 @@ export class DishdetailComponent implements OnInit {
   dishIds: string[];
   prev: string;
   next: string;
-
+  @ViewChild('cform') commentFormDirective;
   commentForm: FormGroup;
   comment: Comment;
   dishcopy: Dish;
@@ -67,7 +62,7 @@ export class DishdetailComponent implements OnInit {
 
     this.dishService.getDishIds().subscribe(dishIds => this.dishIds = dishIds);
     this.route.params.pipe(switchMap((params: Params) => this.dishService.getDish(params['id'])))
-    .subscribe(dish => { this.dish = dish; this.setPrevNext(dish.id); },
+    .subscribe(dish => { this.dish = dish; this.dishcopy = dish; this.setPrevNext(dish.id); },
       errmess => this.errMess = <any>errmess );
   }
 
@@ -84,20 +79,20 @@ export class DishdetailComponent implements OnInit {
   //Form code
 
   createForm() {
-    this.feedbackForm = this.fb.group({
+    this.commentForm = this.fb.group({
       author: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(25)] ],
       rating: [5, [Validators.required] ],
       comment: ['', [Validators.required, Validators.minLength(2)] ],
     });
     
-    this.feedbackForm.valueChanges.subscribe(data => this.onValueChanged(data));
+    this.commentForm.valueChanges.subscribe(data => this.onValueChanged(data));
 
     this.onValueChanged(); // (re)set form validation messages
   }
 
   onValueChanged(data?: any) {
-    if (!this.feedbackForm) { return; }
-    const form = this.feedbackForm;
+    if (!this.commentForm) { return; }
+    const form = this.commentForm;
     for (const field in this.formErrors) {
       if (this.formErrors.hasOwnProperty(field)) {
         // clear previous error message (if any)
