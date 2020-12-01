@@ -44,6 +44,24 @@
         </mat-list-item>
       </mat-list>
     </div>
+    <div class="form-size">
+      <form novalidate [formGroup]="feedbackForm" ##fform="ngForm" (ngSubmit)="onSubmit()">
+        <p>
+          <mat-form-field class="full-width">
+            <input matInput formControlName="author" placeholder="Name" type="text" required>
+            <mat-error *ngIf="formErrors.author">{{formErrors.author}}</mat-error>
+          </mat-form-field>
+          <span class="flex-spacer"></span>
+          <mat-slider thumbLabel [displayWith]="formatLabel" tickInterval="1" min="1" max="5" formControlName="rating"></mat-slider>
+          <span class="flex-spacer"></span>
+          <mat-form-field class="full-width">
+            <textarea matInput formControlName="comment" placeholder="Your Comment" rows=12 required></textarea>
+            <mat-error *ngIf="formErrors.comment">{{formErrors.comment}}</mat-error>
+          </mat-form-field>
+        </p>
+        <button type="submit" mat-button class="background-primary text-floral-white" [disabled]="feedbackForm.invalid">Submit</button>
+      </form>
+    </div>
   </div>
 
   <div fxFlex [hidden]="dish">
